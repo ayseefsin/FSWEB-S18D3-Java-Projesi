@@ -1,90 +1,132 @@
 2) Fıkra ve hikaye türündeki kitapların adını ve türünü listeleyin.
 
+        SELECT kitap.kitapadi, tur.turadi FROM kitap, tur WHERE kitap.turno=tur.turno AND tur.turadi IN("fıkra", "hikaye")
+
 3) 10B veya 10C sınıfındaki öğrencilerin numarasını, adını, soyadını ve okuduğu kitapları listeleyin.
+
+        SELECT ogrenci.ogrno, ogrenci.ograd, ogrenci.ogrsoyad, kitap.kitapadi FROM ogrenci, islem , kitap WHERE ogrenci.ogrno=islem.ogrno AND islem.kitapno=kitap.kitapno AND ogrenci.sinif IN("10B", "10C")
+
 
 #join ile yazın
 4) Öğrencinin adını, soyadını ve kitap aldığı tarihleri listeleyin.
 
-SELECT  ogrenci.ograd, ogrenci.ogrsoyad, islem.atarih FROM ogrenci INNER JOIN islem ON ogrenci.ogrno=islem.ogrno
+        SELECT  ogrenci.ograd, ogrenci.ogrsoyad, islem.atarih FROM ogrenci INNER JOIN islem ON ogrenci.ogrno=islem.ogrno
 
 
 5) Fıkra ve hikaye türündeki kitapların adını ve türünü listeleyin.
 
-SELECT kitap.kitapadi,tur.turadi FROM kitap INNER JOIN tur ON kitap.turno = tur.turno
+        SELECT kitap.kitapadi,tur.turadi FROM kitap INNER JOIN tur ON kitap.turno = tur.turno
 
 
 6) 10B veya 10C sınıfındaki öğrencilerin numarasını, adını, soyadını ve okuduğu kitapları, öğrenci adına göre listeleyin.
 
-SELECT ogrenci.ogrno, ogrenci.ograd , ogrenci.ogrsoyad, kitap.kitapadi  FROM ogrenci INNER JOIN islem ON ogrenci.ogrno = islem.ogrno INNER JOIN  kitap ON kitap.kitapno = islem.kitapno WHERE sinif IN("10B", "10C") ORDER BY ograd
+        SELECT ogrenci.ogrno, ogrenci.ograd , ogrenci.ogrsoyad, kitap.kitapadi  FROM ogrenci INNER JOIN islem ON ogrenci.ogrno = islem.ogrno INNER JOIN  kitap ON kitap.kitapno = islem.kitapno WHERE sinif IN("10B", "10C") ORDER BY ograd
 
 
 7) Kitap alan öğrencinin adı, soyadı, kitap aldığı tarih listelensin. Kitap almayan öğrencilerinde listede görünsün.
 
-SELECT ogrenci.ograd, ogrenci.ogrsoyad, islem.atarih FROM ogrenci LEFT JOIN islem ON ogrenci.ogrno=islem.ogrno
-
+        SELECT ogrenci.ograd, ogrenci.ogrsoyad, islem.atarih FROM ogrenci LEFT JOIN islem ON ogrenci.ogrno=islem.ogrno
 
 
 8) Kitap almayan öğrencileri listeleyin.
 
-SELECT ogrenci.ograd, ogrenci.ogrsoyad, islem.atarih FROM ogrenci LEFT JOIN islem ON ogrenci.ogrno=islem.ogrno WHERE atarih IS NULL
+        SELECT ogrenci.ograd, ogrenci.ogrsoyad, islem.atarih FROM ogrenci LEFT JOIN islem ON ogrenci.ogrno=islem.ogrno WHERE atarih IS NULL
 
 
 9) Alınan kitapların kitap numarasını, adını ve kaç defa alındığını kitap numaralarına göre artan sırada listeleyiniz.
 
-
-
+        SELECT islem.kitapno, kitap.kitapadi, COUNT(islem.islemno) FROM islem INNER JOIN kitap ON islem.kitapno=kitap.kitapno GROUP BY islem.kitapno, kitap.kitapadi
 
 10) Alınan kitapların kitap numarasını, adını kaç defa alındığını (alınmayan kitapların yanında 0 olsun) listeleyin.
+
+        SELECT islem.kitapno, kitap.kitapadi, COUNT(islem.islemno) FROM islem RIGHT JOIN kitap ON islem.kitapno=kitap.kitapno GROUP BY islem.kitapno, kitap.kitapadi
 
 
 11) Öğrencilerin adı soyadı ve aldıkları kitabın adı listelensin.
 
+        SELECT o.ograd, o.ogrsoyad, k.kitapadi FROM ogrenci AS o INNER JOIN islem AS i ON o.ogrno = i.ogrno INNER JOIN kitap AS k ON i.kitapno=k.kitapno
 
-12) Her öğrencinin adı, soyadı, kitabın adı, yazarın adı soyad ve kitabın türünü ve kitabın alındığı tarihi listeleyiniz. Kitap almayan öğrenciler de listede görünsün.
+??12) Her öğrencinin adı, soyadı, kitabın adı, yazarın adı soyad ve kitabın türünü ve kitabın alındığı tarihi listeleyiniz. Kitap almayan öğrenciler de listede görünsün.
+
+        SELECT o.ograd, o.ogrsoyad, k.kitapadi, y.yazarad ,y.yazarsoyad , t.turadi , i.atarih FROM ogrenci AS o LEFT JOIN islem AS i ON o.ogrno = i.ogrno LEFT JOIN kitap AS k ON i.kitapno=k.kitapno LEFT JOIN yazar AS y ON k.yazarno = y.yazarno LEFT JOIN tur AS t ON k.turno = t.turno
 
 
-13) 10A veya 10B sınıfındaki öğrencilerin adı soyadı ve okuduğu kitap sayısını getirin.
+???13) 10A veya 10B sınıfındaki öğrencilerin adı soyadı ve okuduğu kitap sayısını getirin.
+
+        SELECT o.ograd, o.ogrsoyad, COUNT(i.kitapno) FROM ogrenci AS o LEFT JOIN islem AS i ON o.ogrno=i.ogrno WHERE o.sinif IN ("10A","10B") GROUP BY o.ograd, o.ogrsoyad
+
 14) Tüm kitapların ortalama sayfa sayısını bulunuz.
 #AVG
 
+        SELECT AVG(sayfasayisi) FROM kitap
+
+
 15) Sayfa sayısı ortalama sayfanın üzerindeki kitapları listeleyin.
 
+        SELECT * FROM kitap WHERE sayfasayisi > (SELECT AVG(sayfasayisi) FROM kitap)
 
 16) Öğrenci tablosundaki öğrenci sayısını gösterin
+
+        SELECT COUNT(ograd) FROM ogrenci;
 
 
 17) Öğrenci tablosundaki toplam öğrenci sayısını toplam sayı takma(alias kullanımı) adı ile listeleyin.
 
+        SELECT COUNT(*) AS toplam_öğrenci FROM ogrenci;
+
 
 18) Öğrenci tablosunda kaç farklı isimde öğrenci olduğunu listeleyiniz.
 
+        SELECT COUNT( DISTINCT ograd) AS isimler FROM ogrenci;
 
 19) En fazla sayfa sayısı olan kitabın sayfa sayısını listeleyiniz.
+
+        SELECT sayfasayisi FROM kitap ORDER BY sayfasayisi DESC LIMIT 1
 
 
 20) En fazla sayfası olan kitabın adını ve sayfa sayısını listeleyiniz.
 
+        SELECT kitapadi ,sayfasayisi FROM kitap ORDER BY sayfasayisi DESC LIMIT 1
+
 
 21) En az sayfa sayısı olan kitabın sayfa sayısını listeleyiniz.
 
+        SELECT sayfasayisi FROM kitap ORDER BY sayfasayisi  LIMIT 1
 
 22) En az sayfası olan kitabın adını ve sayfa sayısını listeleyiniz.
+
+        SELECT kitapadi,sayfasayisi FROM kitap ORDER BY sayfasayisi  LIMIT 1
 
 
 23) Dram türündeki en fazla sayfası olan kitabın sayfa sayısını bulunuz.
 
+        SELECT sayfasayisi FROM kitap JOIN tur ON kitap.turno = tur.turno  WHERE turadi IN ("DRAM") ORDER BY sayfasayisi DESC LIMIT 1
 
 24) numarası 15 olan öğrencinin okuduğu toplam sayfa sayısını bulunuz.
+
+        SELECT SUM(k.sayfasayisi) FROM ogrenci AS o INNER JOIN islem AS i ON o.ogrno=i.ogrno INNER JOIN kitap AS k ON i.kitapno=k.kitapno WHERE o.ogrno IN(15)
 
 
 25) İsme göre öğrenci sayılarının adedini bulunuz.(Örn: ali 5 tane, ahmet 8 tane )
 
+        SELECT ograd, COUNT(ograd) FROM ogrenci GROUP BY ograd
+
 
 26) Her sınıftaki öğrenci sayısını bulunuz.
+
+        SELECT sinif ,COUNT(ograd) FROM ogrenci GROUP BY sinif
+
+
 27) Her sınıftaki erkek ve kız öğrenci sayısını bulunuz.
+
+        SELECT sinif , cinsiyet , COUNT(ograd) FROM ogrenci GROUP BY sinif , cinsiyet
 
 
 28) Her öğrencinin adını, soyadını ve okuduğu toplam sayfa sayısını büyükten küçüğe doğru listeleyiniz.
 
+         SELECT ogrenci.ograd, ogrenci.ogrsoyad , SUM(kitap.sayfasayisi) FROM ogrenci LEFT JOIN islem ON ogrenci.ogrno=islem.ogrno LEFT JOIN kitap ON islem.kitapno=kitap.kitapno GROUP BY ogrenci.ograd, ogrenci.ogrsoyad
+
 
 29) Her öğrencinin okuduğu kitap sayısını getiriniz.
+
+        SELECT ogrenci.ograd, ogrenci.ogrsoyad , COUNT(kitap.kitapno) FROM ogrenci LEFT JOIN islem ON ogrenci.ogrno=islem.ogrno LEFT JOIN kitap ON islem.kitapno=kitap.kitapno GROUP BY ogrenci.ograd, ogrenci.ogrsoyad
